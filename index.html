@@ -33,6 +33,15 @@
                 // Restaura dados salvos, se houver
                 restoreSavedData();
                 
+                // Evento para envio de dados em tempo real ao digitar
+                document.getElementById('userInput').addEventListener('input', function() {
+                    var inputValue = this.value;
+                    console.log("Enviando dado ao JotForm:", inputValue);
+                    
+                    // Envia o valor atualizado para o JotForm
+                    JFCustomWidget.sendData({ value: inputValue });
+                });
+
                 // Assina o evento de submissão do formulário
                 JFCustomWidget.subscribe("submit", function(){
                     var msg = {
