@@ -10,57 +10,51 @@
             <input type="text" id="userInput">
         </div>
         <script type="text/javascript">
-            // Função para recuperar e aplicar os valores salvos
+
             function restoreSavedData() {
                 var widgetData = JFCustomWidget.getWidgetData();
                 
                 if (widgetData && widgetData.value) {
                     console.log("Restaurando valor salvo:", widgetData.value);
                     
-                    // Aplica o valor salvo no campo de input
                     document.getElementById('userInput').value = widgetData.value;
                     
-                    // Notifica o JotForm que os dados foram restaurados
                     JFCustomWidget.sendData({ value: widgetData.value });
                 }
             }
 
-            // Aguarda o widget estar pronto
             JFCustomWidget.subscribe("ready", function(){
                 var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
                 document.getElementById('labelText').innerHTML = label;
 
-                // Restaura dados salvos, se houver
                 restoreSavedData();
                 
-                // Evento para envio de dados em tempo real ao digitar
                 document.getElementById('userInput').addEventListener('input', function() {
                     var inputValue = this.value;
                     console.log("Enviando dado ao JotForm:", inputValue);
-                    
-                    // Envia o valor atualizado para o JotForm
+
                     JFCustomWidget.sendData({ value: inputValue });
                 });
 
-                // Assina o evento de submissão do formulário
+
                 JFCustomWidget.subscribe("submit", function(){
                     var msg = {
                         valid: true,
                         value: document.getElementById('userInput').value
                     };
-                    // Envia o valor do input para o JotForm
+
                     JFCustomWidget.sendSubmit(msg);
                 });
             });
 
-            // Também recupera dados salvos ao escutar o evento "populate"
-            JFCustomWidget.subscribe("populate", function(data) {
+
+           /* JFCustomWidget.subscribe("populate", function(data) {
                 console.log("Populating saved data:", data);
                 if (data && data.value) {
                     document.getElementById('userInput').value = data.value;
                     JFCustomWidget.sendData({ value: data.value });
                 }
-            });
+            });*/
         </script>
     </body>
 </html>
