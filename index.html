@@ -10,34 +10,47 @@
             <input type="text" id="userInput">
         </div>
         <script type="text/javascript">
-            //always subscribe to ready event and implement widget related code
-            //inside callback function , it is the best practice while developing widgets
-            
-            // ✅ Handle "Save and Continue Later" by listening for the populate event
-            JFCustomWidget.subscribe("populate", function(data) {
-                console.log("Populating saved data:", data); // Debugging log
-        
-                if (data && data.value) {
-                    document.getElementById('userInput').value = data.value;
-        
-                    // Send restored data back to Jotform
-                    JFCustomWidget.sendData({ value: data.value });
+            // Função para recuperar e aplicar os valores salvos
+            function restoreSavedData() {
+                var widgetData = JFCustomWidget.getWidgetData();
+                
+                if (widgetData && widgetData.value) {
+                    console.log("Restaurando valor salvo:", widgetData.value);
+                    
+                    // Aplica o valor salvo no campo de input
+                    document.getElementById('userInput').value = widgetData.value;
+                    
+                    // Notifica o JotForm que os dados foram restaurados
+                    JFCustomWidget.sendData({ value: widgetData.value });
                 }
-            });
+            }
+
+            // Aguarda o widget estar pronto
             JFCustomWidget.subscribe("ready", function(){
                 var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
                 document.getElementById('labelText').innerHTML = label;
-                //subscribe to form submit event
+
+                // Restaura dados salvos, se houver
+                restoreSavedData();
+                
+                // Assina o evento de submissão do formulário
                 JFCustomWidget.subscribe("submit", function(){
                     var msg = {
-                        //you should valid attribute to data for JotForm
-                        //to be able to use youw widget as required
                         valid: true,
                         value: document.getElementById('userInput').value
-                    }
-                    // send value to JotForm
+                    };
+                    // Envia o valor do input para o JotForm
                     JFCustomWidget.sendSubmit(msg);
                 });
+            });
+
+            // Também recupera dados salvos ao escutar o evento "populate"
+            JFCustomWidget.subscribe("populate", function(data) {
+                console.log("Populating saved data:", data);
+                if (data && data.value) {
+                    document.getElementById('userInput').value = data.value;
+                    JFCustomWidget.sendData({ value: data.value });
+                }
             });
         </script>
     </body>
