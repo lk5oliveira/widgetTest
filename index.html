@@ -12,6 +12,23 @@
         <script type="text/javascript">
             //always subscribe to ready event and implement widget related code
             //inside callback function , it is the best practice while developing widgets
+            
+            // ✅ Handle "Save and Continue Later" by listening for the populate event
+            JFCustomWidget.subscribe("populate", function(data) {
+                console.log("Populating saved data:", data); // Debugging log
+        
+                if (data && data.value) {
+                    document.getElementById('addressInput').value = data.value;
+                    document.getElementById('userInput').value = data.value;
+                    
+                    // Update the map if an address is restored
+                    document.getElementById('map').classList.add('show-map');
+                    document.getElementById('mapMessage').classList.add('hidden');
+        
+                    // Send restored data back to Jotform
+                    JFCustomWidget.sendData({ value: data.value });
+                }
+            });
             JFCustomWidget.subscribe("ready", function(){
                 var label = JFCustomWidget.getWidgetSetting('QuestionLabel');
                 document.getElementById('labelText').innerHTML = label;
